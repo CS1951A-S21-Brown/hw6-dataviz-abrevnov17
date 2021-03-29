@@ -7,6 +7,17 @@
     margin: 0;
     padding-top: 20px;
     text-align: center;
+    overflow: visible;
+}
+
+.center {
+	text-align: center;
+	    overflow: visible;
+}
+
+.row {
+	    overflow: visible;
+
 }
 
 /* Include any custom CSS styling here! */
