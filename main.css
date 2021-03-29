@@ -15,9 +15,15 @@
 	    overflow: visible;
 }
 
+/* Include any custom CSS styling here! */
+
 .row {
 	    overflow: visible;
 
 }
 
-/* Include any custom CSS styling here! */
+.written {
+	margin-left: 50px;
+	margin-right: 50px;
+	display: inline-block;
+}

@@ -41,10 +41,10 @@ let genre_y_axis_label = genre_svg.append("g");
 genre_svg.append("text")
     .attr("transform", `translate(${(graph_1_width - margin.left - margin.right)/2 }, ${(graph_1_height - margin.top - margin.bottom) + 10})`)
     .style("text-anchor", "middle")
-    .text("Count");
+    .text("Number of Titles");
 
 let genre_y_axis_text = genre_svg.append("text")
-    .attr("transform", `translate(-100, ${(graph_1_height - margin.top - margin.bottom)/2})`)
+    .attr("transform", `translate(-125, ${(graph_1_height - margin.top - margin.bottom)/2})`)
     .style("text-anchor", "middle");
 
 let genre_title = genre_svg.append("text")
@@ -74,10 +74,10 @@ let runtime_y_axis_label = runtime_svg.append("g");
 runtime_svg.append("text")
     .attr("transform", `translate(${(graph_2_width - margin.left - margin.right)/2 }, ${(graph_2_height - margin.top - margin.bottom) + 10})`)
     .style("text-anchor", "middle")
-    .text("Count");
+    .text("Average Runtime (minutes)");
 
 let runtime_y_axis_text = runtime_svg.append("text")
-    .attr("transform", `translate(-100, ${(graph_2_height - margin.top - margin.bottom)/2})`)
+    .attr("transform", `translate(-125, ${(graph_2_height - margin.top - margin.bottom)/2})`)
     .style("text-anchor", "middle");
 
 let runtime_title = runtime_svg.append("text")
@@ -124,7 +124,7 @@ d3.csv(PATH).then(function(data) {
 
     let slider_val_range = getRange(minYear, maxYear)
 
-    let initial_range = [maxYear-2, maxYear]
+    let initial_range = [maxYear-20, maxYear]
 
     let sliderRange = d3
         .sliderBottom()
@@ -132,7 +132,7 @@ d3.csv(PATH).then(function(data) {
         .max(d3.max(slider_val_range))
         .width(300)
         .tickFormat(d3.format('d'))
-        .tickValues(slider_val_range)
+        .ticks(5)
         .step(1)
         .default(initial_range)
         .fill('#2196f3')
@@ -151,7 +151,8 @@ d3.csv(PATH).then(function(data) {
 
     gRange.call(sliderRange);
 
-    d3.select('p#value-range').text(
+    d3.select('h2#value-range').text(
+    	"Trends in Netflix Content for Years: " + 
         sliderRange
         .value()
         .map(d3.format('d'))
@@ -239,7 +240,7 @@ function setData(start, end, minYear, maxYear) {
                 return d.count
             });
 
-        genre_title_text = "Top Genres by Number of Titles"
+        genre_title_text = `Top Genres by Number of Titles:  ${start}-${end}`
         genre_y_text = "Genre"
 
 
@@ -303,8 +304,8 @@ function setData(start, end, minYear, maxYear) {
                 return d.average_runtime
             });
 
-        runtime_title_text = "Average Runtimes by Year"
-        runtime_y_text = "runtime"
+        runtime_title_text = `Average Runtimes by Year: ${start}-${end}`
+        runtime_y_text = "Period"
 
 
         runtime_y_axis_text.text(runtime_y_text);
@@ -318,7 +319,7 @@ function setData(start, end, minYear, maxYear) {
 
         let graph = getActorConnectionFlowData(filtered_data)
 
-        drawFlowNetwork(graph)
+        drawFlowNetwork(graph, start, end)
     });
 }
 
@@ -338,6 +339,8 @@ function getGenreData(data, num_examples) {
         }
     }
 
+    console.log("in")
+    console.log(Object.keys(genre_to_count).length)
     let pairs = Object.keys(genre_to_count).map(function(key) {
         return {
             "genre": key,
@@ -412,20 +415,22 @@ function getActorConnectionFlowData(data) {
     let actor_to_coworkers = {}; // mapping from actor name to list of actor names that actor has worked with
 
     for (let i = 0; i < data.length; i++) {
-        let cast = data[i].cast.split(", ")
-        for (let j = 0; j < cast.length; j++) {
-            actor = cast[j]
-            let coworkers = new Set(cast)
-            coworkers.delete(actor)
-            actor_to_coworkers[actor] = actor_to_coworkers[actor] ? new Set([...actor_to_coworkers[actor], ...coworkers]) : coworkers;
-        }
+        if (data[i].type == "Movie") { // only want to look at movies
+	        let cast = data[i].cast.split(", ")
+	        for (let j = 0; j < cast.length; j++) {
+	            actor = cast[j]
+	            let coworkers = new Set(cast)
+	            coworkers.delete(actor)
+	            actor_to_coworkers[actor] = actor_to_coworkers[actor] ? new Set([...actor_to_coworkers[actor], ...coworkers]) : coworkers;
+	        }
+	    }
     }
 
     // need to filter out unpopular actors
     let actors = Object.keys(actor_to_coworkers)
 
     
-    threshold = Math.ceil(actors.length**(1/2.33))
+    threshold = Math.ceil(actors.length**(1/2.35))
 
     let unpopular_actors = new Set()
     for (let i = 0; i < actors.length; i++) {
@@ -482,7 +487,7 @@ function getActorConnectionFlowData(data) {
 		Some of these have been linked to by other students on Piazza.
 */
 
-function drawFlowNetwork(graph) {
+function drawFlowNetwork(graph, start, end) {
 
 
     flow_svg.selectAll("*").remove();
@@ -498,14 +503,14 @@ function drawFlowNetwork(graph) {
     flow_svg.append("text")
     .attr("transform", `translate(${(graph_3_width/2 - margin.right)/2 }, ${(graph_3_height - margin.top - margin.bottom) + 10})`)
     .style("text-anchor", "middle")
-    .text(`Showing actors with at least ${threshold} connections`);
+    .text(`*only including actors who have worked with at least ${threshold} other actors from ${start}-${end}*`);
 
 
     flow_svg.append("text")
     .attr("transform", `translate(${(graph_3_width/2 - margin.right)/2 }, ${(-margin.top) + 10})`)
     .style("text-anchor", "middle")
 	.attr("font-weight", 700)
-    .text(`Plot of actors`);
+    .text(`Which Actors Have Worked Together in Movies from ${start}-${end}? Hover to find out!`);
 
     var link = flow_svg.append("g")
         .attr("class", "links")
