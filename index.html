@@ -55,6 +55,14 @@ Users with reasonably good vision will find this dashboard accessible. This incl
 
 In my design and implementation process, I initially wasn't thinking at all about accessibility and was just thinking about what would look cool and would convey the data to someone effectively (assuming they had good vision). This led me to favor complex tooling such as a slider for choosing dates, as this was a cool feauture and can provide a user with a lot of customizability. However, as discussed in the Beterment article, these are hard for visually impaired users to use. Additionally, the desire for cool and complicated-looking visualizations (as well as a desire for extra credit) led me to use the force-directed network graph. This graph is EXTREMELY difficult to interpret if you are a blind user. During my process, I think it would have been better to prioritize accessibility over the intricacy and "coolness" of my visualizations.
 </span>
+<div class="center">
+<h2> Extra Credit </h2>
+</div>
+<span class="written">
+I have used a flow graph. I have also implemented a dynamic stats calculation. Under the flow graph, I have a label that provides information about how many costars has an actor worked with. As this calculation is dependent on the years selected using the slider, this calculation is dynamic. The information I provide is the percentiles using the d3 quantile function. This statistical calculation is useful as it gives an idea of how many costars your average actor has and what that distribution looks like. Note that these percentiles are NOT filtered down by our threshold for number of connections (which we do to render a clean graph).
+
+Additionally, I do some interesting calculations (already described) in order to have my date-ranges dynamically render depending on the years selected (the interval sizes change depending on the years selection).
+</span>
 <!--Feel free to add more JavaScript files as needed-->
 <script type="text/javascript" src="main.js"></script>
 </body>
