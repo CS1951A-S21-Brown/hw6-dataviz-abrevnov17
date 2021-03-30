@@ -506,7 +506,7 @@ function drawFlowNetwork(graph, coworker_counts, start, end) {
     flow_svg.append("text")
     .attr("transform", `translate(${(graph_3_width/2 - margin.right)/2 }, ${(graph_3_height - margin.top - margin.bottom) + 10})`)
     .style("text-anchor", "middle")
-    .text(`*only including actors who have worked with at least ${threshold} other actors from ${start}-${end}*`);
+    .text(`*figure only includes actors who have worked with at least ${threshold} co-stars from ${start}-${end}*`);
 
     flow_svg.append("text")
     .attr("transform", `translate(${(graph_3_width/2 - margin.right)/2 }, ${(-margin.top) + 10})`)
