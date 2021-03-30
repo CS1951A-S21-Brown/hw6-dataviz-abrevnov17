@@ -359,7 +359,7 @@ function getReleaseYearAverageRuntimeData(data, num_examples, start, end) {
     // create object of format 'genre': # of titles
     let release_year_to_count = {};
 
-    let relative_max = end - start
+    let relative_max = end - start + 1
 
     let bucket_size = Math.ceil(relative_max / num_examples)
 
@@ -382,6 +382,9 @@ function getReleaseYearAverageRuntimeData(data, num_examples, start, end) {
         	if (yearStart == yearEnd) {
         		yearRange = `${yearStart}`
         	}
+
+        	console.log(yearRange)
+        	console.log(release_year)
 
         	release_year_to_count[yearRange] = release_year_to_count[yearRange] ? release_year_to_count[yearRange].concat([runtime]) : [runtime];
         }
